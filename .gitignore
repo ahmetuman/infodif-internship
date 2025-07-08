@@ -1,0 +1,8 @@
+venv/
+dummy/
+GlossBERT/
+
+.idea/
+.vscode/
+*.swp
+*.swo
