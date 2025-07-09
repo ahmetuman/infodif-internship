@@ -23,7 +23,7 @@ class Piece(ABC):
         possible_moves = self.get_possible_moves(board)
         return target in possible_moves
     
-    def copy(self):
+    def copy(self): 
         copied_piece = deepcopy(self)
         return copied_piece
     

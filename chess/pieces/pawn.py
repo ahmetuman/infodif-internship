@@ -9,7 +9,7 @@ class Pawn(Piece):
         moves = []
         current_x, current_y = self.position.position_to_tuple()
         
-        # white moves up (+1), black moves down (-1)
+        # white moves +1, black moves down -1
         direction = 1 if self.color == Color.WHITE else -1
         starting_rank = 1 if self.color == Color.WHITE else 6
         
@@ -19,7 +19,7 @@ class Pawn(Piece):
             if board.get_piece_at(forward_position) is None:
                 moves.append(forward_position)
                 
-                # Double move from starting position
+                # Double move at starting
                 if current_y == starting_rank:
                     double_move_y = current_y + (2 * direction)
                     if 0 <= double_move_y <= 7:
@@ -39,7 +39,7 @@ class Pawn(Piece):
                         moves.append(capture_position)
         
         return moves
-    # buna da bak
+    # TODO: Check this logic and rewrite it
     def can_en_passant(self, target_position: Position, board) -> bool:
         current_x, current_y = self.position.position_to_tuple()
         target_x, target_y = target_position.position_to_tuple()
@@ -51,7 +51,7 @@ class Pawn(Piece):
         if abs(target_x - current_x) != 1 or target_y != current_y + (1 if self.color == Color.WHITE else -1):
             return False
             
-        # Check if there's an enemy pawn next to us that can be captured en passant
+        # Check if there's an enemy pawn next to us that can be captured en passant (bu possiblein icinde olabilir)
         adjacent_position = Position(chr(ord('a') + target_x), current_y + 1)
         adjacent_piece = board.get_piece_at(adjacent_position)
         
