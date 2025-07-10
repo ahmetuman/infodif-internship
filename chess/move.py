@@ -1,6 +1,6 @@
 from typing import Optional
-from position import Position
-from pieces.piece import Piece
+from .position import Position
+from .pieces.piece import Piece
 
 
 class Move:
@@ -108,4 +108,4 @@ class Move:
             self.from_position == other.from_position and
             self.to_position == other.to_position and
             self.piece == other.piece
-        ) 
+        )
