@@ -20,10 +20,10 @@ class Queen(Piece):
         
         current_x, current_y = self.position.position_to_tuple()
         
-        for dx, dy in directions:
+        for i, j in directions:
             for distance in range(1, 8):
-                new_x = current_x + (dx * distance)
-                new_y = current_y + (dy * distance)
+                new_x = current_x + (i * distance)
+                new_y = current_y + (j * distance)
                 
                 if not (0 <= new_x <= 7 and 0 <= new_y <= 7):
                     break
@@ -40,6 +40,9 @@ class Queen(Piece):
                     break
         
         return moves
-    
+
     def get_symbol(self) -> str:
-        return "♛" if self.color == Color.BLACK else "♕" 
+        if self.color == Color.BLACK:
+            return "♛"
+        else:
+            return "♕"

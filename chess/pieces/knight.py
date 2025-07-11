@@ -20,9 +20,9 @@ class Knight(Piece):
         
         current_x, current_y = self.position.position_to_tuple()
         
-        for dx, dy in knight_moves:
-            new_x = current_x + dx
-            new_y = current_y + dy
+        for i, j in knight_moves:
+            new_x = current_x + i
+            new_y = current_y + j
             
             if 0 <= new_x <= 7 and 0 <= new_y <= 7:
                 target_position = Position(chr(ord('a') + new_x), new_y + 1)
@@ -34,4 +34,7 @@ class Knight(Piece):
         return moves
     
     def get_symbol(self) -> str:
-        return "♞" if self.color == Color.BLACK else "♘" 
+        if self.color == Color.BLACK:
+            return "♞"
+        else:
+            return "♘"

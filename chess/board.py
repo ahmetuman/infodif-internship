@@ -14,9 +14,9 @@ class Board:
         self.board = [[None for _ in range(8)] for _ in range(8)]
         self.piece_positions: Dict[Position, Piece] = {}
 
-    def _position_to_indices(self, position: Position) -> tuple[int, int]:
-        file_index = ord(position.file.lower()) - ord('a')  # a = 0, b = 1...
-        rank_index = position.rank - 1 # position to rank index
+    def _position_to_indices(self, position: Position) -> tuple[int, int]: # Same with position_to_tuple at position.py
+        file_index = ord(position.file.lower()) - ord('a')
+        rank_index = position.rank - 1 
         return rank_index, file_index
 
     def get_piece_at(self, position: Position) -> Optional[Piece]:
@@ -26,7 +26,7 @@ class Board:
     def place_piece(self, piece: Piece, position: Position):
         rank_idx, file_idx = self._position_to_indices(position)
         
-        # If piece is already on the board, remove it from its current position first
+        # If the square is full, remove existing one first then place the new one.
         if piece.position is not None:
             self.remove_piece(piece.position)
         
@@ -43,27 +43,30 @@ class Board:
             if position in self.piece_positions:
                 del self.piece_positions[position]
             piece.position = None
+        else:
+            raise ValueError(f"The square is already empty.")
         
         return piece
 
-    def move_piece(self, from_pos: Position, to_pos: Position) -> bool:
-        piece = self.get_piece_at(from_pos)
+    def move_piece(self, from_position: Position, to_position: Position) -> bool:
+        # possible moves ekle
+        piece = self.get_piece_at(from_position)
         if piece is None:
             raise ValueError(f"There is no piece at specificed square.")
         
-        self.remove_piece(from_pos)
-        self.place_piece(piece, to_pos)
+        self.remove_piece(from_position)
+        self.place_piece(piece, to_position)
         return True
 
     def setup_initial_position(self):
-        # Clear the board first in case of re-initialization
+        # Clear the board first in case of reinitialization
         self.board = [[None for _ in range(8)] for _ in range(8)]
         self.piece_positions = {}
 
         for file in 'abcdefgh':
             self.place_piece(Pawn(Color.WHITE, None), Position(file, 2))
         
-        for file in 'abcdefgh':
+        for file in 'abcdefgh': 
             self.place_piece(Pawn(Color.BLACK, None), Position(file, 7))
         
         self.place_piece(Rook(Color.WHITE, None), Position('a', 1))
@@ -84,13 +87,14 @@ class Board:
         self.place_piece(Knight(Color.BLACK, None), Position('g', 8))
         self.place_piece(Rook(Color.BLACK, None), Position('h', 8))
 
-    def get_pieces_by_color(self, color: Color) -> List[Piece]: # Oyun logicinde kullan.
+    def get_pieces_by_color(self, color: Color) -> List[Piece]: # for game logic script
         pieces = []
         for rank in range(8):
             for file in range(8):
                 piece = self.board[rank][file]
                 if piece is not None and piece.color == color:
                     pieces.append(piece)
+
         return pieces
 
     def is_square_attacked(self, position: Position, by_color: Color) -> bool:

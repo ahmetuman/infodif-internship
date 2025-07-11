@@ -28,5 +28,7 @@ class Piece(ABC):
         return copied_piece
     
     def move_to(self, new_position: Position):
+        old_position = self.position
         self.position = new_position
         self.has_moved = True 
+        return old_position

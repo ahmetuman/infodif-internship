@@ -10,11 +10,15 @@ def test_board():
     board.setup_initial_position()
     print(board)
 
-    move = board.move_piece(Position('e', 2), Position('e', 4))
+    move = board.move_piece(Position('e', 2), Position('e', 5))
     print(move)
     print(board)
 
-    move = board.move_piece(Position('e', 8), Position('e', 5))
+    move = board.move_piece(Position('d', 7), Position('d', 5))
+    print(move)
+    print(board)
+
+    move = board.move_piece(Position('c', 1), Position('d', 2))
     print(move)
     print(board)
     
@@ -22,10 +26,10 @@ def test_board():
     #print(move)
     #print(board)
 
-    whites = board.get_pieces_by_color(board.get_piece_at(Position('e', 4)).color)
-    blacks = board.get_pieces_by_color(board.get_piece_at(Position('e', 5)).color)
-    print(len(whites))
-    print(len(blacks))
+    #whites = board.get_pieces_by_color(board.get_piece_at(Position('e', 4)).color)
+    #blacks = board.get_pieces_by_color(board.get_piece_at(Position('e', 5)).color)
+    #print(len(whites))
+    #print(len(blacks))
 
 if __name__ == "__main__":
     test_board() 

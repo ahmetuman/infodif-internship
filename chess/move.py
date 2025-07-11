@@ -22,9 +22,9 @@ class Move:
         self.is_en_passant_move = is_en_passant_move
         self.promotion_piece_type = promotion_piece_type
         
-        self._validate_move()
+        self._validate_move_for_piece_type()
     
-    def _validate_move(self):
+    def _validate_move_for_piece_type(self):
         if self.from_position == self.to_position:
             raise ValueError("Same position")
         
@@ -53,13 +53,13 @@ class Move:
         notation = ""
         
         if self.is_castling():
-            return self._get_castling_notation() # and break
+            return self._get_castling_notation()
         
-        # Piece prefix (except for pawns)
+        # Piece symbol (pawns use their file as notation)
         if self.piece.__class__.__name__ != 'Pawn':
             notation += self._get_piece_symbol()
         
-        # Capture notation (optional)
+        # Capture notation (optional, add "x")
         if self.is_capture():
             if self.piece.__class__.__name__ == 'Pawn':
                 notation += self.from_position.file
@@ -84,16 +84,16 @@ class Move:
             'Queen': 'Q', 
             'Rook': 'R',
             'Bishop': 'B',
-            'Knight': 'N', # K de olabilir.
+            'Knight': 'N', 
             'Pawn': ''
         }
         return piece_symbols.get(self.piece.__class__.__name__, '')
     
     def _get_castling_notation(self) -> str:
         if self.to_position.file == 'g':
-            return "O-O"  # Short castling
+            return "O-O"  # King side
         elif self.to_position.file == 'c':
-            return "O-O-O"  # Long castling
+            return "O-O-O"  # Queen side
     
     def __str__(self) -> str:
         return self.to_algebraic_notation()
@@ -104,8 +104,4 @@ class Move:
     def __eq__(self, other) -> bool:
         if not isinstance(other, Move):
             return False
-        return (
-            self.from_position == other.from_position and
-            self.to_position == other.to_position and
-            self.piece == other.piece
-        )
+        return (self.from_position == other.from_position and self.to_position == other.to_position and self.piece == other.piece)

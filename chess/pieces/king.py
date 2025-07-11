@@ -20,10 +20,9 @@ class King(Piece):
         
         current_x, current_y = self.position.position_to_tuple()
         
-        # Normal king moves (1 square in any direction)
-        for dx, dy in directions:
-            new_x = current_x + dx
-            new_y = current_y + dy
+        for i, j in directions:
+            new_x = current_x + i
+            new_y = current_y + j
             
             if 0 <= new_x <= 7 and 0 <= new_y <= 7:
                 target_position = Position(chr(ord('a') + new_x), new_y + 1)
@@ -32,13 +31,11 @@ class King(Piece):
                 if piece_at_target is None or piece_at_target.color != self.color:
                     moves.append(target_position)
         
-        # Add castling moves if possible
         castling_moves = self._get_castling_moves(board)
         moves.extend(castling_moves)
         
         return moves
     
-    # asagidakilere bir daha bak, rok atma
     def _get_castling_moves(self, board) -> List[Position]:
         moves = []
         
@@ -47,11 +44,15 @@ class King(Piece):
             
         current_x, current_y = self.position.position_to_tuple()
         
-        expected_rank = 0 if self.color == Color.WHITE else 7
+        if self.color == Color.WHITE:
+            expected_rank = 0
+        else: 
+            expected_rank = 7
+
         if current_y != expected_rank:
             return moves
         
-        # O-O
+        # O-O 
         if self._can_castle_kingside(board):
             castle_position = Position('g', current_y + 1)
             moves.append(castle_position)
@@ -68,10 +69,7 @@ class King(Piece):
         
         rook_position = Position('h', current_y + 1)
         rook = board.get_piece_at(rook_position)
-        if (rook is None or 
-            rook.__class__.__name__ != 'Rook' or 
-            rook.color != self.color or 
-            rook.has_moved):
+        if (rook is None or rook.__class__.__name__ != 'Rook' or rook.color != self.color or rook.has_moved):
             return False
             
         # Check between king and rook are empty
@@ -86,15 +84,11 @@ class King(Piece):
     def _can_castle_queenside(self, board) -> bool:
         current_x, current_y = self.position.position_to_tuple()
         
-        # Check if rook is in correct position and hasn't moved (maybe rook.py)
         rook_position = Position('a', current_y + 1)
         rook = board.get_piece_at(rook_position)
-        if (rook is None or 
-            rook.__class__.__name__ != 'Rook' or 
-            rook.color != self.color or 
-            rook.has_moved):
+        if (rook is None or rook.__class__.__name__ != 'Rook' or rook.color != self.color or rook.has_moved):
             return False
-            
+        
         # Check between king and rook are empty
         for file in ['b', 'c', 'd']:
             check_position = Position(file, current_y + 1)
@@ -108,4 +102,7 @@ class King(Piece):
         return (self._can_castle_kingside(board), self._can_castle_queenside(board))
     
     def get_symbol(self) -> str:
-        return "♚" if self.color == Color.BLACK else "♔" 
+        if self.color == Color.BLACK:
+            return "♚"
+        else:
+            return "♔"
