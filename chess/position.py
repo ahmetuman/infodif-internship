@@ -26,6 +26,9 @@ class Position:
             return False
         return self.file == other.file and self.rank == other.rank
     
+    def __hash__(self) -> int: # Make it hashable so we can use it as a key in a dictionary
+        return hash((self.file, self.rank))
+    
     def __str__(self) -> str:
         return f"{self.file}{self.rank}"
     
