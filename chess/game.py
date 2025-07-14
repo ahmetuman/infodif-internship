@@ -54,13 +54,8 @@ while game_state.game_result == None:
         print(error)
     else:
         print(f"Last move is ({game_state.current_player.opposite()}): {algebraic_notation}")
-    if game_state.is_draw():
-        print("Draw")
-        break
-    elif game_state.is_checkmate(color=game_state.current_player.opposite()):
-        print(f"Checkmate! {game_state.current_player.opposite()} wins!")
-        break
-    elif game_state.is_check(color=game_state.current_player):
+
+    if game_state.is_check(color=game_state.current_player):
         print("Check")
     
     print(board)
@@ -74,40 +69,53 @@ while game_state.game_result == None:
         from_position = Position(move_input[0], int(move_input[1]))
         to_position = Position(move_input[2], int(move_input[3]))
         piece_to_play = game_state.board.get_piece_at(from_position)
+        
+        captured_piece = game_state.board.get_piece_at(to_position)
+
+        #for i in (piece_to_play.get_possible_moves(board=board)):
+        #    print(i, end=' ')
+
+        if isinstance(piece_to_play, Pawn):
+            if piece_to_play.can_en_passant(target_position=to_position, board=board):
+                move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, is_en_passant_move=True)
+
+            elif piece_to_play.can_promotion(target_position=to_position, board=board):
+                promotion_piece_type = input("Promotion: ")
+                if promotion_piece_type not in ['Q', 'R', 'B', 'N']:
+                    promotion_piece_type = 'Q'  
+                    move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, captured_piece=captured_piece, promotion_piece_type=promotion_piece_type)
+
+            else:
+                move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, captured_piece=captured_piece)
+
+        elif isinstance(piece_to_play, King):
+            file_difference = abs(ord(to_position.file) - ord(from_position.file))
+        
+            if file_difference > 1 and piece_to_play.can_castle(board=board):
+                move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, is_castling_move=True)
+            else:
+                move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, captured_piece=captured_piece)
+
+        else:
+            move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, captured_piece=captured_piece)
+
     except Exception as e:
         error = e
 
-    for i in (piece_to_play.get_possible_moves(board=board)):
-        print(i, end=' ')
-    if isinstance(piece_to_play, Pawn):
-        if piece_to_play.can_en_passant(target_position=to_position, board=board):
-            move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, is_en_passant_move=True)
-            algebraic_notation = move.to_algebraic_notation()
-
-        elif piece_to_play.can_promotion(target_position=to_position, board=board):
-            promotion_piece_type = input("Promotion: ")
-            if promotion_piece_type not in ['Q', 'R', 'B', 'N']:
-                promotion_piece_type = 'Q'  
-            move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, promotion_piece_type=promotion_piece_type)
-            algebraic_notation = move.to_algebraic_notation()
-
-        else:
-            move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play)
-            algebraic_notation = move.to_algebraic_notation()
-
-
-    elif isinstance(piece_to_play, King) and piece_to_play.can_castle(board=board):
-        move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play, is_castling_move=True)
-        algebraic_notation = move.to_algebraic_notation()
-
-    else:
-        move = Move(from_position=from_position, to_position=to_position, piece=piece_to_play)
-        algebraic_notation = move.to_algebraic_notation()
-
 
     try:
+        algebraic_notation = move.to_algebraic_notation()
         game_state.make_move(move=move)
         error = None
     except Exception as e:
         error = e
+    
+    if game_state.is_draw():
+        print("Draw")
+        print(board)
+        break
+    elif game_state.is_checkmate(color=game_state.current_player):
+        print(f"Checkmate! {game_state.current_player.opposite()} wins!")
+        print(board)
+        break
 

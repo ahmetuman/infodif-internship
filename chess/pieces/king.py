@@ -77,8 +77,18 @@ class King(Piece):
             check_position = Position(file, current_y + 1)
             if board.get_piece_at(check_position) is not None:
                 return False
-                
-        # TODO: Check if king is in check or passes through check for impossible move
+        
+        # King cannot castle if in check
+        opponent_color = self.color.opposite()
+        if board.is_square_attacked(self.position, opponent_color):
+            return False
+        
+        # King cannot castle through check
+        for file in ['f', 'g']:
+            check_position = Position(file, current_y + 1)
+            if board.is_square_attacked(check_position, opponent_color):
+                return False
+            
         return True
     
     def _can_castle_queenside(self, board) -> bool:
@@ -94,8 +104,18 @@ class King(Piece):
             check_position = Position(file, current_y + 1)
             if board.get_piece_at(check_position) is not None:
                 return False
-                
-        # TODO: Check if king is in check or passes through check for impossible move
+        
+        # King cant castle if in check
+        opponent_color = self.color.opposite()
+        if board.is_square_attacked(self.position, opponent_color):
+            return False
+        
+        # King cant castle through check  
+        for file in ['c', 'd']:
+            check_position = Position(file, current_y + 1)
+            if board.is_square_attacked(check_position, opponent_color):
+                return False
+            
         return True
     
     def can_castle(self, board) -> tuple[bool, bool]:

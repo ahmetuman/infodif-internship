@@ -55,6 +55,7 @@ class Board:
             raise ValueError(f"There is no piece at specificed square.")
         
         self.remove_piece(from_position)
+        piece.has_moved = True  
         self.place_piece(piece, to_position)
         return True
 
@@ -161,5 +162,6 @@ class Board:
 
         self.place_piece(King(Color.BLACK, None), Position('c', 6))
         self.place_piece(Bishop(Color.BLACK, None), Position('c', 8))
+        self.place_piece(Rook(Color.BLACK, None), Position('d', 8))
         self.place_piece(Pawn(Color.BLACK, None), Position('f', 7))
 

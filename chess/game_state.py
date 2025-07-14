@@ -59,25 +59,30 @@ class GameState:
                 captured_piece = self.board.get_piece_at(target_position)
                 move = Move(from_position=piece.position, to_position=target_position, piece=piece, captured_piece=captured_piece)
                 
-                if self._is_king_under_check_after_this_move(move, color):
+                if not self._is_king_under_check_after_this_move(move, color):
                     legal_moves.append(move)
         
         return legal_moves
     
     def _is_king_under_check_after_this_move(self, move: Move, color: Color) -> bool:
         board_copy = self.board.copy()
-        
         self._execute_move_on_board(move, board_copy)
         
-        # Check if the king is in check after this move
-        king_position = self._find_king(color)
+        king_position = None
+        pieces = board_copy.get_pieces_by_color(color)
+        for piece in pieces:
+            if isinstance(piece, King):
+                king_position = piece.position
+                break
         
-        if color == Color.WHITE:
-            opponent_color = Color.BLACK
-        else:
-            opponent_color = Color.WHITE        
+        if king_position is None:
+            raise LookupError(f"King not found after move")
         
-        return not board_copy.is_square_attacked(king_position, opponent_color)
+ 
+
+        opponent_color = color.opposite()     
+        
+        return board_copy.is_square_attacked(king_position, opponent_color)
     
     def _execute_move_on_board(self, move: Move, board: Board):
         if move.is_castling():
@@ -211,4 +216,4 @@ class GameState:
         captured_pawn_rank = move.from_position.rank
         captured_pawn_pos = Position(move.to_position.file, captured_pawn_rank)
         return self.board.get_piece_at(captured_pawn_pos)
-    
+ 
