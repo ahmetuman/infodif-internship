@@ -115,7 +115,7 @@ class GameState:
         piece_classes = {'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
 
         piece_class = piece_classes.get(move.promotion_piece_type, Queen)
-        promoted_piece = piece_class(move.piece.color, move.to_position)
+        promoted_piece = piece_class(move.piece.color, None)
         
         board.place_piece(promoted_piece, move.to_position)
 
@@ -154,11 +154,11 @@ class GameState:
     
     def make_move(self, move: Move) -> bool:
         if move.piece.color != self.current_player:
-            return False
+            raise ValueError(f"Current player is {self.current_player}, not {move.piece.color}!")
         
         legal_moves = self.get_legal_moves(self.current_player)
         if move not in legal_moves:
-            return False
+            raise ValueError(f"Illegal move!") 
         
         # TODO: Captured pieces or move history may be unnecessary, recheck if not used 
         captured_piece = None
@@ -188,11 +188,11 @@ class GameState:
         
         self._store_current_position()
         
-        self._check_game_end() # This one may be added to the game engine (main function)
+        self.check_game_end() # This one may be added to the game engine (main function)
         
         return True
     
-    def _check_game_end(self):
+    def check_game_end(self):
         if self.is_checkmate(self.current_player):
             if self.current_player == Color.BLACK:
                 winner = "White" 

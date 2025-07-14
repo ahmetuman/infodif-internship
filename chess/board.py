@@ -119,7 +119,11 @@ class Board:
                     file_char = chr(ord('a') + file)
                     rank_num = rank + 1
                     position = Position(file_char, rank_num)
-                    new_board.place_piece(copied_piece, position)
+                    
+                    # WARNING: Directly set the board positions instead of using place_piece()
+                    new_board.board[rank][file] = copied_piece
+                    new_board.piece_positions[position] = copied_piece
+                    copied_piece.position = position
         
         return new_board
 
@@ -142,4 +146,20 @@ class Board:
         lines.append("   a b c d e f g h")
         
         return "\n".join(lines)
+    
+    def setup_test_position(self):
+        # Clear the board first in case of reinitialization
+        self.board = [[None for _ in range(8)] for _ in range(8)]
+        self.piece_positions = {}
+
+        self.place_piece(Pawn(Color.WHITE, None), Position('b', 7))
+        self.place_piece(Pawn(Color.WHITE, None), Position('g', 5))
+        self.place_piece(King(Color.WHITE, None), Position('e', 1))
+        self.place_piece(Rook(Color.WHITE, None), Position('a', 1))
+        self.place_piece(Rook(Color.WHITE, None), Position('h', 1))
+
+
+        self.place_piece(King(Color.BLACK, None), Position('c', 6))
+        self.place_piece(Bishop(Color.BLACK, None), Position('c', 8))
+        self.place_piece(Pawn(Color.BLACK, None), Position('f', 7))
 

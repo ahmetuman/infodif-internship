@@ -6,3 +6,8 @@ class Color(Enum):
     
     def opposite(self):
         return Color.BLACK if self == Color.WHITE else Color.WHITE 
+    
+    def __str__(self):
+        return "White" if self == Color.WHITE else "Black" 
+
+        

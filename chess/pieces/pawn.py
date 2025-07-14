@@ -30,6 +30,22 @@ class Pawn(Piece):
                     if board.get_piece_at(double_forward_square) is None:
                         moves.append(double_forward_square)
         
+        en_passant_rank = None
+
+        if self.color == Color.WHITE and current_y == 4:  
+            en_passant_rank = 4
+        elif self.color == Color.BLACK and current_y == 3:  
+            en_passant_rank = 3
+            
+        if en_passant_rank is not None:
+            for adjacent_x in [current_x - 1, current_x + 1]:
+                if 0 <= adjacent_x <= 7:
+                    en_passant_target_y = current_y + direction
+                    if 0 <= en_passant_target_y <= 7:
+                        en_passant_target = Position(chr(ord('a') + adjacent_x), en_passant_target_y + 1)
+                        if self.can_en_passant(en_passant_target, board):
+                            moves.append(en_passant_target)
+        
         # Diagonal capture
         for possible_capture_x in [current_x - 1, current_x + 1]:
             if 0 <= possible_capture_x <= 7:
@@ -71,3 +87,10 @@ class Pawn(Piece):
             return "♟"
         else:
             return "♙"
+    
+    def can_promotion(self, target_position: Position, board):
+        target_x, target_y = target_position.position_to_tuple()
+        if (self.color == Color.BLACK and target_y == 0) or (self.color == Color.WHITE and target_y == 7):
+            return True
+        return False
+
