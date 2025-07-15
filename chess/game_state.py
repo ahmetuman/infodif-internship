@@ -16,7 +16,7 @@ class GameState:
     def __init__(self, board: Board, current_player: Color):
         self.board = board
         self.current_player = current_player
-        self.move_history: List[Move] = []
+        self.move_history: List[str] = []  
         self.captured_pieces_history: List[Optional[Piece]] = []
         self.half_move_clock = 0  # For 50 move rule
         self.full_move_number = 1  # Increments after black's move
@@ -165,7 +165,6 @@ class GameState:
         if move not in legal_moves:
             raise ValueError(f"Illegal move!") 
         
-        # TODO: Captured pieces or move history may be unnecessary, recheck if not used 
         captured_piece = None
         if move.is_capture():
             if move.is_en_passant():
@@ -175,7 +174,8 @@ class GameState:
         
         self._execute_move_on_board(move, self.board)
         
-        self.move_history.append(move)
+        move_notation = f"{move.from_position}{move.to_position}"
+        self.move_history.append(move_notation)
         self.captured_pieces_history.append(captured_piece)
         
         if move.piece.__class__.__name__ == 'Pawn' or move.is_capture():
@@ -186,14 +186,11 @@ class GameState:
         if self.current_player == Color.BLACK:
             self.full_move_number += 1 # TODO: This is probably unnecessary too
         
-        if self.current_player == Color.WHITE: # Use the opposite function from color class, i never used it for now
-            self.current_player = Color.BLACK
-        else: 
-            self.current_player = Color.WHITE
+        self.current_player = self.current_player.opposite()
         
         self._store_current_position()
         
-        self.check_game_end() # This one may be added to the game engine (main function)
+        #self.check_game_end()
         
         return True
     

@@ -103,7 +103,10 @@ class Board:
         
         for piece in attacking_pieces:
             if piece.position is not None:
-                possible_moves = piece.get_possible_moves(self)
+                if piece.__class__.__name__ == 'King':
+                    possible_moves = piece.get_possible_moves(self, include_castling=False)
+                else:
+                    possible_moves = piece.get_possible_moves(self)
                 if position in possible_moves:
                     return True
         

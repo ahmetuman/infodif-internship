@@ -5,7 +5,7 @@ from ..color import Color
 
 
 class King(Piece):
-    def get_possible_moves(self, board) -> List[Position]:
+    def get_possible_moves(self, board, include_castling: bool = True) -> List[Position]:
         moves = []
         directions = [
             (0, 1),   # Up
@@ -31,8 +31,9 @@ class King(Piece):
                 if piece_at_target is None or piece_at_target.color != self.color:
                     moves.append(target_position)
         
-        castling_moves = self._get_castling_moves(board)
-        moves.extend(castling_moves)
+        if include_castling:
+            castling_moves = self._get_castling_moves(board)
+            moves.extend(castling_moves)
         
         return moves
     

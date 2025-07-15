@@ -4,7 +4,12 @@ This is a simple, terminal-based chess game written entirely in **pure Python** 
 
 ## 🚀 How to Run
 
-Just run the `main.py` file:
+Just run the `chess/main.py` file:
 
 ```bash
-python3 main.py
+python3 chess/main.py
+
+## Stockfish Mod
+
+Enter 1 for Player vs Player
+Enter 2 for Player vs Stockfish
