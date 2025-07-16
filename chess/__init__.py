@@ -1,4 +1,3 @@
-# Chess game package
 from .position import Position
 from .color import Color
 from .move import Move
